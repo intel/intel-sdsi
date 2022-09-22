@@ -266,6 +266,9 @@ MAILBOX COMMANDS
 | READ_STATE_CERT  | 0x10       | Read the state certificate from the On Demand hardware  |
 |                  |            | to mailbox.                                             |
 +------------------+------------+---------------------------------------------------------+
+| READ_METER_CERT  | 0x14       | Read the meter certificate from the On Demand hardware  |
+|                  |            | to mailbox.                                             |
++------------------+------------+---------------------------------------------------------+
 
 Mailbox commands are written to the Mailbox buffer in the last QWORD following a
 payload, if applicable.
@@ -329,7 +332,11 @@ ENABLED_FEATURES
 | Bit    | Bit   | Name                               | Description                    |
 | Offset | Width |                                    |                                |
 +========+=======+====================================+================================+
-|  63:4  |  60   | RESERVED                           |                                |
+|  63:27 |  37   | RESERVED                           |                                |
++--------+-------+------------------------------------+--------------------------------+
+|  26    |  1    | METERING                           | Metering is enabled            |
++--------+-------+------------------------------------+--------------------------------+
+|  25:4  |  22   | RESERVED                           |                                |
 +--------+-------+------------------------------------+--------------------------------+
 |  3     |  1    | ON_DEMAND                          | Provisioning is enabled        |
 +--------+-------+------------------------------------+--------------------------------+
