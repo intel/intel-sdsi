@@ -58,7 +58,7 @@ Access Type = 2: MMIO space is at BAR[TBIR] + Offset
 
 Access Type = 3: MMIO space is at OFFSET + 10h from the from the address of the On Demand discover structure
 
-GUID: An ID that identifies the layout of the registers in the On Demand MMIO space.
+GUID: An ID that identifies the memory layout of the registers in the On Demand MMIO space.
 
 
 On Demand MMIO layout for GUID = 006DD191h
@@ -108,8 +108,8 @@ On Demand MMIO layout for GUID = F210D9EFh
 On Demand MMIO details
 ----------------------
 
-Control Structure
-+++++++++++++++++
+Control Structure for GUID = 006DD191h
+++++++++++++++++++++++++++++++++++++++
 
 +---------------+---------------+---------------+-------------------------------+
 |    Byte 3     |    Byte 2     |    Byte 1     |             Byte 0            |
@@ -128,72 +128,110 @@ Control Structure
 | Message Size                  | Reserved                                      |
 +-------------------------------+-----------------------------------------------+
 
+Control Structure for GUID = F210D9EFh
+++++++++++++++++++++++++++++++++++++++
+
++---------------+---------------+---------------+-------------------------------+
+|    Byte 3     |    Byte 2     |    Byte 1     |             Byte 0            |
++=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+===+===+===+===+===+===+===+===+
+|7|6|5|4|3|2|1|0|7|6|5|4|3|2|1|0|7|6|5|4|3|2|1|0| 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+---+---+---+---+---+---+---+---+
+| Packet Size                   | Status        |RDY|CPL| Owner |EOM|SOM|R/W|RUN|
+|                               | Code          |   |   |       |   |   |   |BSY|
+|                               |               |   |   |       |   |   |   |   |
+|                               |               |   |   |       |   |   |   |   |
+|                               |               |   |   |       |   |   |   |   |
+|                               |               |   |   |       |   |   |   |   |
+|                               |               |   |   |       |   |   |   |   |
+|                               |               |   |   |       |   |   |   |   |
++-------------------------------+---------------+---+---+-------+---+---+---+---+
+| Message Size                  | Reserved                                  | I |
+|                               |                                           | B |
+|                               |                                           | L |
+|                               |                                           | O |
+|                               |                                           | C |
+|                               |                                           | K |
++-------------------------------+-------------------------------------------+---+
+| Reserved                      | Metering update period                        |
++-------------------------------+-----------------------------------------------+
+| Reserved                                                                      |
++-------------------------------+-----------------------------------------------+
+
 CONTROL FIELDS
 
-+-------+----------+---------------+-----+---------------------------------------------------------+
-| Bits  | Field    | Default value | R/W |                    Description                          |
-+=======+==========+===============+=====+=========================================================+
-| 0     | RUN/BUSY | 0             | R/W | Flag is set by requester to initiate data transmission. |
-|       |          |               |     | On Demand firmware clears this flag when the            |
-|       |          |               |     | transmission has ended.                                 |
-+-------+----------+---------------+-----+---------------------------------------------------------+
-| 1     | Read/    | 0             | R/W | Determines whether read from or write to mailbox shall  |
-|       | Write    |               |     | be performed:                                           |
-|       | Command  |               |     |                                                         |
-|       |          |               |     | = 0 for read                                            |
-|       |          |               |     |                                                         |
-|       |          |               |     | = 1 for write                                           |
-+-------+----------+---------------+-----+---------------------------------------------------------+
-| 2     | SOM      | 0             | R/W | When data is ready to be read, this bit is set by       |
-|       |          |               |     | firmware to indicate that the data in the mailbox is    |
-|       |          |               |     | the first packet.                                       |
-+-------+----------+---------------+-----+---------------------------------------------------------+
-| 3     | EOM      | 0             | R/W | When data is ready to be read, this bit is set by       |
-|       |          |               |     | firmware to indicate that the data in the mailbox is    |
-|       |          |               |     | the last packet.                                        |
-+-------+----------+---------------+-----+---------------------------------------------------------+
-| 5:4   | Owner    | 0             | R   | Mailbox ownership – read only:                          |
-|       |          |               |     |                                                         |
-|       |          |               |     | 2’b00 – None – Mailbox is free to use                   |
-|       |          |               |     |                                                         |
-|       |          |               |     | 2’b01 – In-band agent                                   |
-|       |          |               |     |                                                         |
-|       |          |               |     | 2’b10 – Out-of-band agent                               |
-|       |          |               |     |                                                         |
-|       |          |               |     | 2’b11 – Reserved                                        |
-+-------+----------+---------------+-----+---------------------------------------------------------+
-| 6     | CPL      | 0             | R/W | Complete bit.                                           |
-|       |          |               |     |                                                         |
-|       |          |               |     | At the end of data transmission, used to indicate to    |
-|       |          |               |     | firmware that processing is complete and ownership of   |
-|       |          |               |     | the mailbox is relinquished.                            |
-|       |          |               |     |                                                         |
-|       |          |               |     | Read Command: For reads greater than 1024B, setting     |
-|       |          |               |     | this bit also adjusts the buffer read position forward  |
-|       |          |               |     | by 1024B.                                               |
-+-------+----------+---------------+-----+---------------------------------------------------------+
-| 7     | RDY      | 0             | R   | Read command only. This bit is set by firmware when a   |
-|       |          |               |     | packet is ready to be read.                             |
-+-------+----------+---------------+-----+---------------------------------------------------------+
-| 15:8  | Status   | 0             | R   | Status of mailbox operation filled by firmware at the   |
-|       | Code     |               |     | end of a read or write operation.                       |
-|       |          |               |     |                                                         |
-|       |          |               |     | = 0x40 – Success                                        |
-|       |          |               |     |                                                         |
-|       |          |               |     | = 0x80 – Timeout                                        |
-|       |          |               |     |                                                         |
-|       |          |               |     | = 0x90 – Failure                                        |
-+-------+----------+---------------+-----+---------------------------------------------------------+
-| 31:16 | Packet   | 0             | R/W | Mailbox packet size in bytes. Written by the requester  |
-|       | Size     |               |     | at start of transmission. Written by the firmware when  |
-|       |          |               |     | data is ready to be read.                               |
-+-------+----------+---------------+-----+---------------------------------------------------------+
-| 47:32 | Reserved |               |     |                                                         |
-+-------+----------+---------------+-----+---------------------------------------------------------+
-| 63:48 | Message  | 0             | R   | Read command only. Total message size in bytes. Set by  |
-|       | Size     |               |     | firmware when data is greater than 1024B. Size is QWORD |
-|       |          |               |     | aligned.                                                |
-+-------+----------+---------------+-----+---------------------------------------------------------+
++--------+----------+---------------+-----+---------------------------------------------------------+
+| Bits   | Field    | Default value | R/W |                    Description                          |
++========+==========+===============+=====+=========================================================+
+| 0      | RUN/BUSY | 0             | R/W | Flag is set by requester to initiate data transmission. |
+|        |          |               |     | On Demand firmware clears this flag when the            |
+|        |          |               |     | transmission has ended.                                 |
++--------+----------+---------------+-----+---------------------------------------------------------+
+| 1      | Read/    | 0             | R/W | Determines whether read from or write to mailbox shall  |
+|        | Write    |               |     | be performed:                                           |
+|        | Command  |               |     |                                                         |
+|        |          |               |     | = 0 for read                                            |
+|        |          |               |     |                                                         |
+|        |          |               |     | = 1 for write                                           |
++--------+----------+---------------+-----+---------------------------------------------------------+
+| 2      | SOM      | 0             | R/W | When data is ready to be read, this bit is set by       |
+|        |          |               |     | firmware to indicate that the data in the mailbox is    |
+|        |          |               |     | the first packet.                                       |
++--------+----------+---------------+-----+---------------------------------------------------------+
+| 3      | EOM      | 0             | R/W | When data is ready to be read, this bit is set by       |
+|        |          |               |     | firmware to indicate that the data in the mailbox is    |
+|        |          |               |     | the last packet.                                        |
++--------+----------+---------------+-----+---------------------------------------------------------+
+| 5:4    | Owner    | 0             | R   | Mailbox ownership – read only:                          |
+|        |          |               |     |                                                         |
+|        |          |               |     | 2’b00 – None – Mailbox is free to use                   |
+|        |          |               |     |                                                         |
+|        |          |               |     | 2’b01 – In-band agent                                   |
+|        |          |               |     |                                                         |
+|        |          |               |     | 2’b10 – Out-of-band agent                               |
+|        |          |               |     |                                                         |
+|        |          |               |     | 2’b11 – Reserved                                        |
++--------+----------+---------------+-----+---------------------------------------------------------+
+| 6      | CPL      | 0             | R/W | Complete bit.                                           |
+|        |          |               |     |                                                         |
+|        |          |               |     | At the end of data transmission, used to indicate to    |
+|        |          |               |     | firmware that processing is complete and ownership of   |
+|        |          |               |     | the mailbox is relinquished.                            |
+|        |          |               |     |                                                         |
+|        |          |               |     | Read command: For reads greater than 1024B, setting     |
+|        |          |               |     | this bit also adjusts the buffer read position forward  |
+|        |          |               |     | by 1024B.                                               |
++--------+----------+---------------+-----+---------------------------------------------------------+
+| 7      | RDY      | 0             | R   | Read command only. This bit is set by firmware when a   |
+|        |          |               |     | packet is ready to be read.                             |
++--------+----------+---------------+-----+---------------------------------------------------------+
+| 15:8   | Status   | 0             | R   | Status of mailbox operation filled by firmware at the   |
+|        | Code     |               |     | end of a read or write operation.                       |
+|        |          |               |     |                                                         |
+|        |          |               |     | = 0x40 – Success                                        |
+|        |          |               |     |                                                         |
+|        |          |               |     | = 0x80 – Timeout                                        |
+|        |          |               |     |                                                         |
+|        |          |               |     | = 0x90 – Failure                                        |
++--------+----------+---------------+-----+---------------------------------------------------------+
+| 31:16  | Packet   | 0             | R/W | Mailbox packet size in bytes. Written by the requester  |
+|        | Size     |               |     | at start of transmission. Written by the firmware when  |
+|        |          |               |     | data is ready to be read.                               |
++--------+----------+---------------+-----+---------------------------------------------------------+
+| 32     | In-Band  | 0             |     | If set, indicates in-band access is locked by BIOS.     |
+|        | Lock     |               |     |                                                         |
++--------+----------+---------------+-----+---------------------------------------------------------+
+| 47:33  | Reserved |               |     |                                                         |
++--------+----------+---------------+-----+---------------------------------------------------------+
+| 63:48  | Message  | 0             | R   | Read command only. Total message size in bytes. Set by  |
+|        | Size     |               |     | firmware when data is greater than 1024B. Size is QWORD |
+|        |          |               |     | aligned.                                                |
++--------+----------+---------------+-----+---------------------------------------------------------+
+| 79:64  | Metering |               |     |                                                         |
+|        | Update   |               |     |                                                         |
+|        | Period   |               |     |                                                         |
++--------+----------+---------------+-----+---------------------------------------------------------+
+| 127:80 | Reserved |               |     |                                                         |
++--------+----------+---------------+-----+---------------------------------------------------------+
 
 Mailbox
 +++++++
