@@ -149,7 +149,7 @@ CONTROL FIELDS
 |       |          |               |     | this bit also adjusts the buffer read position forward  |
 |       |          |               |     | by 1024B.                                               |
 +-------+----------+---------------+-----+---------------------------------------------------------+
-| 7     | RDY      | 0             | R   | Read Command Only. This bit is set by firmware when a   |
+| 7     | RDY      | 0             | R   | Read command only. This bit is set by firmware when a   |
 |       |          |               |     | packet is ready to be read.                             |
 +-------+----------+---------------+-----+---------------------------------------------------------+
 | 15:8  | Status   | 0             | R   | Status of mailbox operation filled by firmware at the   |
@@ -167,7 +167,7 @@ CONTROL FIELDS
 +-------+----------+---------------+-----+---------------------------------------------------------+
 | 47:32 | Reserved |               |     |                                                         |
 +-------+----------+---------------+-----+---------------------------------------------------------+
-| 63:48 | Message  | 0             | R   | Read Command Only. Total message size in bytes. Set by  |
+| 63:48 | Message  | 0             | R   | Read command only. Total message size in bytes. Set by  |
 |       | Size     |               |     | firmware when data is greater than 1024B. Size is QWORD |
 |       |          |               |     | aligned.                                                |
 +-------+----------+---------------+-----+---------------------------------------------------------+
@@ -175,7 +175,7 @@ CONTROL FIELDS
 Mailbox
 +++++++
 
-+---------------+---------------+---------------+---------------+-------+   
++---------------+---------------+---------------+---------------+-------+
 |    Byte 3     |    Byte 2     |    Byte 1     |    Byte 0     | DWORD |
 +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=======+
 |7|6|5|4|3|2|1|0|7|6|5|4|3|2|1|0|7|6|5|4|3|2|1|0|7|6|5|4|3|2|1|0|       |
@@ -196,13 +196,13 @@ MAILBOX COMMANDS
 +------------------+------------+---------------------------------------------------------+
 | Command Name     | Command ID | Description                                             |
 +==================+============+=========================================================+
-| PROVISION_AKC    | 0x04       | Write the Authentication Key Certificate (AKC) in the   |
+| PROVISION_AKC    | 0x04       | Write the authentication key certificate (AKC) in the   |
 |                  |            | mailbox to SDSi hardware.                               |
 +------------------+------------+---------------------------------------------------------+
-| PROVISION_CAP    | 0x08       | Write the Capability Activation Payload (CAP) in the    |
+| PROVISION_CAP    | 0x08       | Write the capability activation payload (CAP) in the    |
 |                  |            | mailbox to SDSi hardware.                               |
 +------------------+------------+---------------------------------------------------------+
-| READ_SDSI_STATE  | 0x10       | Read the State Certificate from the SDSi hardware to    |
+| READ_SDSI_STATE  | 0x10       | Read the state certificate from the SDSi hardware to    |
 |                  |            | mailbox.                                                |
 +------------------+------------+---------------------------------------------------------+
 
@@ -218,7 +218,7 @@ SDSi Registers
 +========+=========+=================================+=================================+
 |  0x00  |  8      | Reserved                        |                                 |
 +--------+---------+---------------------------------+---------------------------------+
-|  0x08  |  8      | ENABLED_FEATURES                | Enabled Features (see below)    |
+|  0x08  |  8      | ENABLED_FEATURES                | Enabled features (see below)    |
 +--------+---------+---------------------------------+---------------------------------+
 |  0x10  |  8      | Reserved                        |                                 |
 +--------+---------+---------------------------------+---------------------------------+
@@ -249,22 +249,22 @@ PROVISIONING_AUTH_FAILURE_COUNT
 | Bit    | Bit   | Name                               | Description                    |
 | Offset | Width |                                    |                                |
 +========+=======+====================================+================================+
-|  63:12 |  60   | RESERVED                           |                                |
+|  63:12 |  52   | RESERVED                           |                                |
 +--------+-------+------------------------------------+--------------------------------+
-|  9:11  |  3    | LICENSE_AUTH_FAILURE_THRESHOLD     | Capability Activation Payload  |
+|  11:9  |  3    | LICENSE_AUTH_FAILURE_THRESHOLD     | Capability activation payload  |
 |        |       |                                    | provisioning failure threshold |
 |        |       |                                    | between power cycles           |
 +--------+-------+------------------------------------+--------------------------------+
-|  6:8   |  3    | LICENSE_AUTH_FAILURE_COUNT         | Number of times Capability     |
-|        |       |                                    | Activation Payload provisioning|
+|  8:6   |  3    | LICENSE_AUTH_FAILURE_COUNT         | Number of times capability     |
+|        |       |                                    | activation payload provisioning|
 |        |       |                                    | failed in a power cycle        |
 +--------+-------+------------------------------------+--------------------------------+
-|  3:5   |  3    | LICENSE_KEY_AUTH_FAILURE_THRESHOLD | Authentication Key Certificate |
+|  5:3   |  3    | LICENSE_KEY_AUTH_FAILURE_THRESHOLD | Authentication key certificate |
 |        |       |                                    | provisioning failure threshold |
 |        |       |                                    | between power cycles           |
 +--------+-------+------------------------------------+--------------------------------+
-|  2:0   |  3    | LICENSE_KEY_AUTH_FAILURE_COUNT     | Number of times Authentication |
-|        |       |                                    | Key Certificate provisioning   |
+|  2:0   |  3    | LICENSE_KEY_AUTH_FAILURE_COUNT     | Number of times authentication |
+|        |       |                                    | key certificate provisioning   |
 |        |       |                                    | failed in a power cycle        |
 +--------+-------+------------------------------------+--------------------------------+
 
@@ -274,6 +274,8 @@ PROVISIONING_AVAILABILITY
 | Bit    | Bit   | Name                               | Description                    |
 | Offset | Width |                                    |                                |
 +========+=======+====================================+================================+
+|  63:54 |  10   | RESERVED                           |                                |
++--------+-------+------------------------------------+--------------------------------+
 |  53:51 |  3    | UPDATES_THRESHOLD                  | Maximum number of provision    |
 |        |       |                                    | operations allowed between     |
 |        |       |                                    | power cycles                   |
