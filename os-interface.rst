@@ -1,14 +1,14 @@
-========================================================
-Intel® Software Defined Silicon (SDSi) In-band Interface
-========================================================
+==================================
+Intel® On Demand In-band Interface
+==================================
 
-SDSi Capability Enumeration
----------------------------
+On Demand Capability Enumeration
+--------------------------------
 
-SDSi is enumerated, per socket, as a PCI Express Vendor Specific Capability
-(VSEC) on a PCIe endpoint device. The table below shows the entire VSEC header
-for SDSi including the PCI Express Extended capability header. The VSEC is used
-by software to locate the SDSi Discovery Structure.
+Intel On Demand is enumerated, per socket, as a PCI Express Vendor Specific
+Capability (VSEC) on a PCIe endpoint device. The table below shows the entire
+VSEC header for On Demand including the PCI Express Extended capability header.
+The VSEC is used by software to locate the On Demand discovery structure.
 
 Refer to the PCI Express Specification for details on the Vendor Specific
 Capability definitions.
@@ -24,7 +24,7 @@ Capability definitions.
 +-----------------------+-------+-------------------------------+
 |                       | VSEC  |                               |
 | VSEC Length = 10h     | REV = |  VSEC ID = 0041h              |
-|                       | 1h    |  (SDSi Capability No.)        |
+|                       | 1h    |  (On Demand Capability No.)   |
 +---------------+-------+-------+-------------------------------+
 | Entry Size    | Number of     |                               |
 | = 4 (MMIO size| Entries = 1   |  Reserved                     |
@@ -34,11 +34,11 @@ Capability definitions.
 | Offset                                                  | TBIR|
 +---------------------------------------------------------+-----+
 
-SDSi Discovery Structure
-------------------------
+On Demand discovery structure
+-----------------------------
 
-The SDSi Discovery structure provides the location of the SDSi MMIO Layout where
-the hardware registers are located.
+The On Demand discovery structure provides the location of the memory mapped
+region used to access the On Demand mailbox and hardware registers.
 
 +---------------+---------------+---------------+---------------+
 |    Byte 3     |    Byte 2     |    Byte 1     |    Byte 0     |
@@ -56,13 +56,13 @@ the hardware registers are located.
 
 Access Type = 2: MMIO space is at BAR[TBIR] + Offset
 
-Access Type = 3: MMIO space is at OFFSET + 10h from the from the address of the SDSi Discover Structure
+Access Type = 3: MMIO space is at OFFSET + 10h from the from the address of the On Demand discover structure
 
-GUID: An ID that identifies the layout of the registers in the SDSI MMIO space.
+GUID: An ID that identifies the layout of the registers in the On Demand MMIO space.
 
 
-SDSi MMIO Layout for GUID = 006DD191h
--------------------------------------
+On Demand MMIO layout for GUID = 006DD191h
+------------------------------------------
 
 +-------------------+-----+---------+----------+---------------------------------------+
 | Name              | R/W | Size    | Offset   | Description                           |
@@ -74,7 +74,7 @@ SDSi MMIO Layout for GUID = 006DD191h
 +-------------------+-----+---------+----------+---------------------------------------+
 | PPIN              | R   | 8       |  258     | Protected Processor Inventory Number  |
 +-------------------+-----+---------+----------+---------------------------------------+
-| SDSi Registers    | R   | 48      |  260     | SDSi registers (see below)            |
+| Registers         | R   | 48      |  260     | On Demand registers (see below)       |
 +-------------------+-----+---------+----------+---------------------------------------+
 | RESERVED          |     | 8       |  272     |                                       |
 +-------------------+-----+---------+----------+---------------------------------------+
@@ -82,8 +82,8 @@ SDSi MMIO Layout for GUID = 006DD191h
 +-------------------+-----+---------+----------+---------------------------------------+
 
 
-SDSI MMIO details
------------------
+On Demand MMIO details
+----------------------
 
 Control Structure
 +++++++++++++++++
@@ -111,8 +111,8 @@ CONTROL FIELDS
 | Bits  | Field    | Default value | R/W |                    Description                          |
 +=======+==========+===============+=====+=========================================================+
 | 0     | RUN/BUSY | 0             | R/W | Flag is set by requester to initiate data transmission. |
-|       |          |               |     | SDSi firmware clears this flag when the transmission    |
-|       |          |               |     | has ended.                                              |
+|       |          |               |     | On Demand firmware clears this flag when the            |
+|       |          |               |     | transmission has ended.                                 |
 +-------+----------+---------------+-----+---------------------------------------------------------+
 | 1     | Read/    | 0             | R/W | Determines whether read from or write to mailbox shall  |
 |       | Write    |               |     | be performed:                                           |
@@ -197,20 +197,20 @@ MAILBOX COMMANDS
 | Command Name     | Command ID | Description                                             |
 +==================+============+=========================================================+
 | PROVISION_AKC    | 0x04       | Write the authentication key certificate (AKC) in the   |
-|                  |            | mailbox to SDSi hardware.                               |
+|                  |            | mailbox to On Demand hardware.                          |
 +------------------+------------+---------------------------------------------------------+
 | PROVISION_CAP    | 0x08       | Write the capability activation payload (CAP) in the    |
-|                  |            | mailbox to SDSi hardware.                               |
+|                  |            | mailbox to On Demand hardware.                          |
 +------------------+------------+---------------------------------------------------------+
-| READ_SDSI_STATE  | 0x10       | Read the state certificate from the SDSi hardware to    |
-|                  |            | mailbox.                                                |
+| READ_STATE_CERT  | 0x10       | Read the state certificate from the On Demand hardware  |
+|                  |            | to mailbox.                                             |
 +------------------+------------+---------------------------------------------------------+
 
 Mailbox commands are written to the Mailbox buffer in the last QWORD following a
 payload, if applicable.
 
-SDSi Registers
-++++++++++++++
+On Demand Registers
++++++++++++++++++++
 
 +--------+---------+---------------------------------+---------------------------------+
 | Offset | Size    | Name                            | Description                     |
@@ -238,7 +238,7 @@ ENABLED_FEATURES
 +========+=======+====================================+================================+
 |  63:4  |  60   | RESERVED                           |                                |
 +--------+-------+------------------------------------+--------------------------------+
-|  3     |  1    | SDSi                               | SDSi is enabled                |
+|  3     |  1    | ON_DEMAND                          | Provisioning is enabled        |
 +--------+-------+------------------------------------+--------------------------------+
 |  2:0   |  3    | RESERVED                           |                                |
 +--------+-------+------------------------------------+--------------------------------+
