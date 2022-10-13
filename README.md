@@ -13,3 +13,4 @@ and other related tasks.
 * [os-interface.rst](os-interface.rst) describes On Demand enumeration, mailbox structure, mailbox commands, and registers.
 * [state-certificate-encoding.rst](state-certificate-encoding.rst) describes the structure of the state certificate.
 * [meter-certificate.rst](meter-certificate.rst) describes the structure of the meter certificate.
+* [attestation.rst](attestation.rst) describes the attestation services.
